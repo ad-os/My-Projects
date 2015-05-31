@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+ 	<head>
+	    <meta charset="utf-8">
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
+		<!-- Optional theme -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+
+		<!-- Latest compiled and minified JavaScript -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+		<style>
+
+
+			html, body {
+				width: 100%;
+				height: 100%;
+			}
+
+			.container{
+				background-image: url("photo.jpg");
+				background-size: cover;
+				height: 100%;
+				width: 100%;
+			}
+
+			.marginTop{
+				margin-top: 250px;
+			}
+
+			.center{
+				text-align: center;
+			}
+
+			.background{
+				background-color: rgba(20,20,20,.3);
+				border-radius: 10px;
+			}
+
+			.marginBottom{
+				margin-bottom: 20px;
+			}
+
+			.color{
+				color: #a5a5a5;
+			}
+
+			#success, #danger{
+				display: none;
+			}
+
+		</style>
+
+	</head>
+
+	<body>
+		
+		<div class="container">
+
+			<div class="row marginTop center">
+
+				<div class="col-md-6 col-md-offset-3 background">
+						
+					<h1 class="color">Post Code Finder</h1>
+
+
+					<form>
+
+					<div class="form-group">
+
+						<input type="text" id="city" class="form-control" placeholder="Eg :105 sector Noida"/>
+
+					</div>
+
+					<input type="submit" class="btn btn-success btn-lg marginBottom" id="findMyPostcode" value="Find My PostCode" />
+
+
+					</form>
+
+				<div class="alert alert-success" id="success"></div>
+
+				<div class="alert alert-danger" id="danger">Not Able to find</div>
+
+
+				</div>
+
+			</div>
+
+		</div>
+
+		<script>
+
+
+		$("#findMyPostcode").click(function(event){
+
+	//		alert("working");
+
+			var result=0;
+
+			$(".alert").hide();
+
+			event.preventDefault();
+
+			$.ajax({
+
+				type:"GET",
+				url:"https://maps.googleapis.com/maps/api/geocode/xml?address="+encodeURIComponent($('#city').val())+"&key=AIzaSyA12OwsmROzyF7ryMqu3X6tHpi14DHeKsM",
+				success: processXML,
+				error:error
+			});
+
+
+			function error(){
+				alert("Failed");
+			}
+
+
+			function processXML(xml){
+
+				$(xml).find("address_component").each(function(){
+
+
+              if($(this).find("type").text() == "postal_code"){
+
+                var x = ($(this).find("long_name").text());
+
+                $("#success").text(x).fadeIn();
+
+                result=1;
+
+              }
+
+			});
+
+			if (result==0) {
+
+				$("#danger").fadeIn();
+
+			};
+
+		}
+
+
+	});
+
+
+
+		</script>
+
+
+	</body>
+</html>
+
